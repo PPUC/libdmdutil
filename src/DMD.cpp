@@ -939,11 +939,11 @@ bool DMD::UpdatePalette(uint8_t* pPalette, uint8_t depth, uint8_t r, uint8_t g, 
   return (memcmp(pPalette, palette, colors * 3) != 0);
 }
 
-void DMD::AdjustRGB24Depth(uint8_t* pData, uint8_t* pDstData, int length, uint8_t* palette, uint8_t depth)
+void DMD::AdjustRGB24Depth(uint8_t* pData, uint8_t* pDstData, int bufferSize, uint8_t* palette, uint8_t depth)
 {
   if (depth != 24)
   {
-    for (int i = 0; i < length; i++)
+    for (int i = 0; i < bufferSize; i++)
     {
       int pos = i * 3;
       uint32_t r = pData[pos];
@@ -967,7 +967,7 @@ void DMD::AdjustRGB24Depth(uint8_t* pData, uint8_t* pDstData, int length, uint8_
   }
   else
   {
-    memcpy(pDstData, pData, length);
+    memcpy(pDstData, pData, bufferSize);
   }
 }
 

@@ -288,7 +288,7 @@ int main(int argc, char* argv[])
       pConfig->SetZeDMDSaveSettings(r.Get<bool>("ZeDMD", "SaveSettings", false));
       // ZeDMD WiFi
       pConfig->SetZeDMDWifiEnabled(r.Get<bool>("ZeDMD", "WifiEnabled", false));
-      pConfig->SetZeDMDWifiIP(r.Get<string>("ZeDMD", "WifiIP", "").c_str());
+      pConfig->SetZeDMDWifiAddr(r.Get<string>("ZeDMD", "WifiIP", "").c_str());
       pConfig->SetZeDMDWifiPort(r.Get<int>("ZeDMD", "WifiPort", 3333));
 
       // Pixelcade

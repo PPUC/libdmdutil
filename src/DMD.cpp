@@ -480,20 +480,20 @@ void DMD::FindDisplays()
 
             if (pConfig->IsZeDMDWifiEnabled())
             {
-              std::string wifiIP = pConfig->GetZeDMDWifiIP() ? pConfig->GetZeDMDWifiIP() : "";
+              std::string wifiAddr = pConfig->GetZeDMDWifiAddr() ? pConfig->GetZeDMDWifiAddr() : "";
               uint16_t udpPortNumber = pConfig->GetZeDMDWifiPort() > 0 ? pConfig->GetZeDMDWifiPort() : 3333;
 
-              if (wifiIP.empty())
+              if (wifiAddr.empty())
               {
                 DMDUtil::Log(DMDUtil_LogLevel_ERROR, "ERROR: ZeDMD Wifi IP address is not configured.");
               }
 
-              // Proceed only if the wifiIP is valid.
-              if (!wifiIP.empty() && (open = pZeDMD->OpenWiFi(wifiIP.c_str(), udpPortNumber)))
+              // Proceed only if the wifiAddr is valid.
+              if (!wifiAddr.empty() && (open = pZeDMD->OpenWiFi(wifiAddr.c_str(), udpPortNumber)))
               {
                 // Fix RGB and brightness
                 std::stringstream logMessage;
-                logMessage << "ZeDMD Wifi enabled, connected to " << wifiIP << ":" << udpPortNumber << ".";
+                logMessage << "ZeDMD Wifi enabled, connected to " << wifiAddr << ":" << udpPortNumber << ".";
                 DMDUtil::Log(DMDUtil_LogLevel_INFO, logMessage.str().c_str());
               }
             }

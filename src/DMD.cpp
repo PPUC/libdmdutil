@@ -488,7 +488,7 @@ void DMD::FindDisplays()
                 DMDUtil::Log(DMDUtil_LogLevel_ERROR, "ERROR: ZeDMD Wifi IP address is not configured.");
               }
 
-              // Proceed only if the wifiIP is valid
+              // Proceed only if the wifiIP is valid.
               if (!wifiIP.empty() && (open = pZeDMD->OpenWiFi(wifiIP.c_str(), udpPortNumber)))
               {
                 // Fix RGB and brightness

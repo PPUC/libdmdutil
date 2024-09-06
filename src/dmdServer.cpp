@@ -286,6 +286,11 @@ int main(int argc, char* argv[])
       pConfig->SetZeDMDRGBOrder(r.Get<int>("ZeDMD", "RGBOrder", -1));
       pConfig->SetZeDMDBrightness(r.Get<int>("ZeDMD", "Brightness", -1));
       pConfig->SetZeDMDSaveSettings(r.Get<bool>("ZeDMD", "SaveSettings", false));
+      // ZeDMD WiFi
+      pConfig->SetZeDMDWifiEnabled(r.Get<bool>("ZeDMD", "WifiEnabled", false));
+      pConfig->SetZeDMDWifiIP(r.Get<string>("ZeDMD", "WifiIP", "").c_str());
+      pConfig->SetZeDMDWifiPort(r.Get<int>("ZeDMD", "WifiPort", 3333));
+
       // Pixelcade
       pConfig->SetPixelcade(r.Get<bool>("Pixelcade", "Enabled", true));
       pConfig->SetPixelcadeDevice(r.Get<string>("Pixelcade", "Device", "").c_str());
@@ -334,7 +339,7 @@ int main(int argc, char* argv[])
 
   sockpp::initialize();
   if (opt_verbose)
-    DMDUtil::Log(DMDUtil_LogLevel_INFO, "Opening DMDServer, listining for TCP connections on %s:%d",
+    DMDUtil::Log(DMDUtil_LogLevel_INFO, "Opening DMDServer, listening for TCP connections on %s:%d",
                  pConfig->GetDMDServerAddr(), pConfig->GetDMDServerPort());
   sockpp::tcp_acceptor acc({pConfig->GetDMDServerAddr(), (in_port_t)pConfig->GetDMDServerPort()});
   if (!acc)

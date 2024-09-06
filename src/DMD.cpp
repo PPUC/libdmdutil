@@ -476,25 +476,49 @@ void DMD::FindDisplays()
             pZeDMD = new ZeDMD();
             pZeDMD->SetLogCallback(ZeDMDLogCallback, nullptr);
 
-            if (pConfig->GetZeDMDDevice() != nullptr && pConfig->GetZeDMDDevice()[0] != '\0')
-              pZeDMD->SetDevice(pConfig->GetZeDMDDevice());
-
             bool open = false;
-            if ((open = pZeDMD->Open()))
+
+            if (pConfig->IsZeDMDWifiEnabled())
             {
-              if (pConfig->GetZeDMDBrightness() != -1) pZeDMD->SetBrightness(pConfig->GetZeDMDBrightness());
-              if (pConfig->IsZeDMDSaveSettings())
+              std::string wifiIP = pConfig->GetZeDMDWifiIP() ? pConfig->GetZeDMDWifiIP() : "";
+              uint16_t udpPortNumber = pConfig->GetZeDMDWifiPort() > 0 ? pConfig->GetZeDMDWifiPort() : 3333;
+
+              if (wifiIP.empty())
               {
-                if (pConfig->GetZeDMDRGBOrder() != -1) pZeDMD->SetRGBOrder(pConfig->GetZeDMDRGBOrder());
-                pZeDMD->SaveSettings();
-                if (pConfig->GetZeDMDRGBOrder() != -1)
+                DMDUtil::Log(DMDUtil_LogLevel_ERROR, "ERROR: ZeDMD Wifi IP address is not configured.");
+              }
+
+              // Proceed only if the wifiIP is valid
+              if (!wifiIP.empty() && (open = pZeDMD->OpenWiFi(wifiIP.c_str(), udpPortNumber)))
+              {
+                // Fix RGB and brightness
+                std::stringstream logMessage;
+                logMessage << "ZeDMD Wifi enabled, connected to " << wifiIP << ":" << udpPortNumber << ".";
+                DMDUtil::Log(DMDUtil_LogLevel_INFO, logMessage.str().c_str());
+              }
+            }
+            else  // Serial communication
+            {
+              if (pConfig->GetZeDMDDevice() != nullptr && pConfig->GetZeDMDDevice()[0] != '\0')
+                pZeDMD->SetDevice(pConfig->GetZeDMDDevice());
+
+              bool open = false;
+              if ((open = pZeDMD->Open()))
+              {
+                if (pConfig->GetZeDMDBrightness() != -1) pZeDMD->SetBrightness(pConfig->GetZeDMDBrightness());
+                if (pConfig->IsZeDMDSaveSettings())
                 {
-                  // Setting the RGBOrder requires a reboot.
-                  pZeDMD->Reset();
-                  std::this_thread::sleep_for(std::chrono::seconds(8));
-                  pZeDMD->Close();
-                  std::this_thread::sleep_for(std::chrono::seconds(1));
-                  open = pZeDMD->Open();
+                  if (pConfig->GetZeDMDRGBOrder() != -1) pZeDMD->SetRGBOrder(pConfig->GetZeDMDRGBOrder());
+                  pZeDMD->SaveSettings();
+                  if (pConfig->GetZeDMDRGBOrder() != -1)
+                  {
+                    // Setting the RGBOrder requires a reboot.
+                    pZeDMD->Reset();
+                    std::this_thread::sleep_for(std::chrono::seconds(8));
+                    pZeDMD->Close();
+                    std::this_thread::sleep_for(std::chrono::seconds(1));
+                    open = pZeDMD->Open();
+                  }
                 }
               }
             }

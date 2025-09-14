@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include "DMDUtil/DMDUtil.h"
+#include "Serum/serum-decode.h"
 #include "cargs.h"
-#include "serum-decode.h"
 
 static struct cag_option options[] = {
     {.identifier = 'c',

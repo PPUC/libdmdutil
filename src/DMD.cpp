@@ -25,11 +25,11 @@
 #include "AlphaNumeric.h"
 #include "FrameUtil.h"
 #include "Logger.h"
+#include "Serum/serum-decode.h"
+#include "Serum/serum.h"
 #include "ZeDMD.h"
 #include "komihash/komihash.h"
 #include "pupdmd.h"
-#include "serum-decode.h"
-#include "serum.h"
 #include "sockpp/tcp_connector.h"
 
 namespace DMDUtil

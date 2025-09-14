@@ -59,10 +59,8 @@ cmake \
    -B build
 cmake --build build -- -j${NUM_PROCS}
 cp -r third-party/include/lz4 ../../third-party/include/
-cp src/LZ4Stream.h ../../third-party/include/
-cp src/SceneGenerator.h ../../third-party/include/
-cp src/serum.h ../../third-party/include/
-cp src/serum-decode.h ../../third-party/include/
+mkdir -p ../../third-party/include/Serum
+cp include/*.h ../../third-party/include/Serum/
 cp build/libserum.a ../../third-party/build-libs/ios/arm64/
 cd ..
 

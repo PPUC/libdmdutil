@@ -26,7 +26,6 @@
 #include "FrameUtil.h"
 #include "Logger.h"
 #include "Serum/serum-decode.h"
-#include "Serum/serum.h"
 #include "ZeDMD.h"
 #include "komihash/komihash.h"
 #include "pupdmd.h"

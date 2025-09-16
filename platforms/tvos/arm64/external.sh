@@ -60,7 +60,7 @@ cmake \
 cmake --build build -- -j${NUM_PROCS}
 cp -r third-party/include/lz4 ../../third-party/include/
 mkdir -p ../../third-party/include/Serum
-cp include/*.h ../../third-party/include/Serum/
+cp -r include/Serum ../../third-party/include/
 cp build/libserum.a ../../third-party/build-libs/tvos/arm64/
 cd ..
 

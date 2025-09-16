@@ -64,7 +64,7 @@ cmake \
 cmake --build build -- -j${NUM_PROCS}
 cp -r third-party/include/lz4 ../../third-party/include/
 mkdir -p ../../third-party/include/Serum
-cp include/*.h ../../third-party/include/Serum/
+cp -r include/Serum ../../third-party/include/
 cp -a build/libserum.{dylib,*.dylib} ../../third-party/runtime-libs/macos/x64/
 cd ..
 

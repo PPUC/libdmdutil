@@ -30,8 +30,7 @@
 
 class ZeDMD;
 
-struct _Serum_Frame_Struc;
-typedef _Serum_Frame_Struc SerumFrameStruct;
+struct SerumFrame;
 
 namespace PUPDMD
 {
@@ -210,7 +209,7 @@ class DMDUTILAPI DMD
   char m_pupVideosPath[DMDUTIL_MAX_PATH_SIZE] = {0};
   char m_dumpPath[DMDUTIL_MAX_PATH_SIZE] = {0};
   AlphaNumeric* m_pAlphaNumeric;
-  SerumFrameStruct* m_pSerum;
+  SerumFrame* m_pSerum;
   ZeDMD* m_pZeDMD;
   PUPDMD::DMD* m_pPUPDMD;
   std::vector<LevelDMD*> m_levelDMDs;

@@ -68,7 +68,7 @@ cmake \
 cmake --build build --config ${BUILD_TYPE}
 cp -r third-party/include/lz4 ../../third-party/include/
 mkdir -p ../../third-party/include/Serum
-cp include/*.h ../../third-party/include/Serum/
+cp -r include/Serum ../../third-party/include/
 cp build/${BUILD_TYPE}/serum.lib ../../third-party/build-libs/win/x86/
 cp build/${BUILD_TYPE}/serum.dll ../../third-party/runtime-libs/win/x86/
 cd ..

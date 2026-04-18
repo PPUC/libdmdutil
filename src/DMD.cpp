@@ -41,7 +41,7 @@
 
 #include "AlphaNumeric.h"
 #include "FrameUtil.h"
-#include "Logger.h"
+#include "DMDUtil/Logger.h"
 #include "OutputFilters.h"
 #include "TimeUtils.h"
 #include "ZeDMD.h"

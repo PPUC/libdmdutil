@@ -40,6 +40,7 @@ Config::Config()
   m_dumpFrames = false;
   m_dumpZip = false;
   m_filterTransitionalFrames = false;
+  m_roundedCorners = 0;
   m_zedmd = true;
   m_zedmdDevice.clear();
   m_zedmdDebug = false;
@@ -379,6 +380,16 @@ void Config::parseConfigFile(const char* path)
   catch (const std::exception&)
   {
     SetFilterTransitionalFrames(false);
+  }
+
+  // OutputFilters
+  try
+  {
+    SetRoundedCorners(r.Get<int>("OutputFilters", "RoundedCorners", 0));
+  }
+  catch (const std::exception&)
+  {
+    SetRoundedCorners(0);
   }
 }
 

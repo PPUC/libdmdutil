@@ -236,7 +236,9 @@ void Config::parseConfigFile(const char* path)
 
   try
   {
-    SetZeDMDHeight(r.Get<int>("ZeDMD-SPI", "Height", 32));
+    int height = r.Get<int>("ZeDMD-SPI", "Height", 32);
+    if (height == 16) height = 32; // x16 renders as x32 rom frames
+    SetZeDMDHeight(height);
   }
   catch (const std::exception&)
   {

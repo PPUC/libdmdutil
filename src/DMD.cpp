@@ -43,6 +43,7 @@
 #include "FrameUtil.h"
 #include "DMDUtil/Logger.h"
 #include "OutputFilters.h"
+#include "ScalingMode.h"
 #include "TimeUtils.h"
 #include "ZeDMD.h"
 #include "komihash/komihash.h"
@@ -1627,6 +1628,17 @@ void DMD::SerumThread()
               Serum_SetMaximumUnknownFramesToSkip(Config::GetInstance()->GetMaximumUnknownFramesToSkip());
               m_serumHasTimestamp = false;
               m_serumLastTimestampMs = 0;
+
+              // Adopt the colorization's upscaling algorithm for our own display
+              // scaling, so in-frame and display scaling agree.
+              const uint8_t scalingAlgorithm = Serum_GetScalingAlgorithm();
+              SetScalingAlgorithm(scalingAlgorithm);
+              Log(DMDUtil_LogLevel_INFO, "Serum: Upscaling algorithm is %s",
+                  scalingAlgorithm == SERUM_SCALING_SCALE2X ? "Scale2x" : "line doubling");
+            }
+            else
+            {
+              SetScalingAlgorithm(static_cast<uint8_t>(FrameUtil::ScalingAlgorithm::Scale2x));
             }
           }
 
@@ -2123,12 +2135,12 @@ void DMD::PIN2DMDThread()
       const int upHeight = height * 2;
       if (upWidth == targetWidth && upHeight == targetHeight)
       {
-        FrameUtil::Helper::ScaleUp(dst, src, width, height, 24);
+        FrameUtil::Helper::ScaleUpBy(GetScalingAlgorithm(), dst, src, width, height, 24);
         return true;
       }
       if (upWidth <= kMaxTempWidth && upHeight <= kMaxTempHeight)
       {
-        FrameUtil::Helper::ScaleUp(tempBuffer, src, width, height, 24);
+        FrameUtil::Helper::ScaleUpBy(GetScalingAlgorithm(), tempBuffer, src, width, height, 24);
         FrameUtil::Helper::ScaleDown(dst, targetWidth, targetHeight, tempBuffer, upWidth, upHeight, 24);
         return true;
       }
@@ -2148,7 +2160,7 @@ void DMD::PIN2DMDThread()
         const int upHeight = height * 2;
         if (upWidth <= kMaxTempWidth && upHeight <= kMaxTempHeight)
         {
-          FrameUtil::Helper::ScaleUp(tempBuffer, src, width, height, 24);
+          FrameUtil::Helper::ScaleUpBy(GetScalingAlgorithm(), tempBuffer, src, width, height, 24);
           FrameUtil::Helper::ScaleDown(dst, targetWidth, targetHeight, tempBuffer, upWidth, upHeight, 24);
           return true;
         }

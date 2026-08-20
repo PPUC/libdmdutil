@@ -73,7 +73,6 @@ cp third-party/include/libserialport.h ${PROJECT_SOURCE_ROOT}/third-party/includ
 cp third-party/include/cargs.h ${PROJECT_SOURCE_ROOT}/third-party/include/
 cp -r third-party/include/komihash ${PROJECT_SOURCE_ROOT}/third-party/include/
 cp -r third-party/include/sockpp ${PROJECT_SOURCE_ROOT}/third-party/include/
-cp third-party/include/FrameUtil.h ${PROJECT_SOURCE_ROOT}/third-party/include/
 cp third-party/build-libs/win/x86/cargs.lib ${PROJECT_SOURCE_ROOT}/third-party/build-libs/win/x86/
 cp third-party/runtime-libs/win/x86/cargs.dll ${PROJECT_SOURCE_ROOT}/third-party/runtime-libs/win/x86/
 cp third-party/build-libs/win/x86/libserialport.lib ${PROJECT_SOURCE_ROOT}/third-party/build-libs/win/x86/
@@ -94,6 +93,9 @@ cd ..
 
 prepare_dependency_source libserum "${LIBSERUM_SHA}" "https://github.com/PPUC/libserum/archive/${LIBSERUM_SHA}.tar.gz" tar LIBSERUM_SOURCE_DIR
 cd libserum
+# libserum consumes libframeutil's FrameUtil.h and its CMake refuses to
+# configure without it, so run its own dependency fetch first.
+./platforms/win/x86/external.sh
 cmake \
    -G "Visual Studio 18 2026" \
    -A Win32 \
@@ -109,6 +111,11 @@ cp src/SceneGenerator.h ${PROJECT_SOURCE_ROOT}/third-party/include/
 cp src/serum.h ${PROJECT_SOURCE_ROOT}/third-party/include/
 cp src/TimeUtils.h ${PROJECT_SOURCE_ROOT}/third-party/include/
 cp src/serum-decode.h ${PROJECT_SOURCE_ROOT}/third-party/include/
+# FrameUtil.h comes from libserum, not libzedmd: libserum pins the
+# libframeutil revision whose ScalingAlgorithm values it persists in the
+# cROMc header and reports through Serum_GetScalingAlgorithm(), so this
+# is the copy libdmdutil has to agree with.
+cp third-party/include/FrameUtil.h ${PROJECT_SOURCE_ROOT}/third-party/include/
 cp build/${BUILD_TYPE}/serum.lib ${PROJECT_SOURCE_ROOT}/third-party/build-libs/win/x86/
 cp build/${BUILD_TYPE}/serum.dll ${PROJECT_SOURCE_ROOT}/third-party/runtime-libs/win/x86/
 cd ..

@@ -227,6 +227,15 @@ void Config::parseConfigFile(const char* path)
 
   try
   {
+    SetZeDMDLightEffectDevice(r.Get<std::string>("ZeDMD-SPI", "LightEffectDevice", "").c_str());
+  }
+  catch (const std::exception&)
+  {
+    SetZeDMDLightEffectDevice("");
+  }
+
+  try
+  {
     SetZeDMDWidth(r.Get<int>("ZeDMD-SPI", "Width", 128));
   }
   catch (const std::exception&)

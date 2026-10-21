@@ -1089,6 +1089,15 @@ void DMD::FindDisplays()
               Log(DMDUtil_LogLevel_INFO, "ZeDMD SPI: speed=%d, framePause=%d, width=%d, height=%d",
                   pConfig->GetZeDMDSpiSpeed(), pConfig->GetZeDMDSpiFramePause(), pZeDMD->GetWidth(),
                   pZeDMD->GetHeight());
+              // The speaker lights of a PPUCDMD: commands on a UART of their own.
+              const char* lightDevice = pConfig->GetZeDMDLightEffectDevice();
+              if (lightDevice && lightDevice[0] != '\0')
+              {
+                if (pZeDMD->OpenLightEffectChannel(lightDevice))
+                  Log(DMDUtil_LogLevel_INFO, "ZeDMD SPI: light effect channel on %s", lightDevice);
+                else
+                  Log(DMDUtil_LogLevel_ERROR, "ZeDMD SPI: light effect channel on %s failed", lightDevice);
+              }
             }
             else
             {
@@ -1442,6 +1451,8 @@ void DMD::SerumThread()
       Log(DMDUtil_LogLevel_DEBUG, "Serum: rotation=%lu, flags=%lu", m_pSerum->rotationtimer, result >> 16);
 
       QueueSerumFrames(lastDmdUpdate, result & 0x10000, result & 0x20000, false, 0);
+      // A scene step can start speaker light effects.
+      SendSerumLightEffects(false);
 
       if (result > 0 && ((result & 0xffff) < 2048))
       {
@@ -1651,6 +1662,7 @@ void DMD::SerumThread()
               Serum_SetMaximumUnknownFramesToSkip(Config::GetInstance()->GetMaximumUnknownFramesToSkip());
               m_serumHasTimestamp = false;
               m_serumLastTimestampMs = 0;
+              SendSerumLightEffects(true);
             }
           }
 
@@ -1680,6 +1692,7 @@ void DMD::SerumThread()
             Serum_Runtime_Metadata runtimeMetadata{};
             runtimeMetadata.size = sizeof(runtimeMetadata);
             Serum_GetRuntimeMetadata(&runtimeMetadata);
+            SendSerumLightEffects(false);
 
             if (result != IDENTIFY_NO_FRAME && result != IDENTIFY_SAME_FRAME)
             {
@@ -3822,6 +3835,52 @@ void DMD::PupDMDThread()
       }
     }
   }
+}
+
+void DMD::SendSerumLightEffects(bool afterLoad)
+{
+#ifdef SERUM_LIGHT_CHANNELS
+  ZeDMD* pZeDMD = m_pZeDMD;
+  if (!pZeDMD || !pZeDMD->IsLightEffectChannelOpen())
+  {
+    if (!afterLoad)
+    {
+      // Nothing to send them to: drop them, so they do not pile up.
+      Serum_Light_Effect unused[SERUM_LIGHT_CHANNELS];
+      (void)Serum_GetLightEffects(unused);
+    }
+    return;
+  }
+  Serum_Light_Effect effects[SERUM_LIGHT_CHANNELS] = {};
+  if (afterLoad)
+  {
+    const uint32_t defaults = Serum_GetDefaultLightEffects(effects);
+    if (defaults == 0)
+    {
+      // A colorization without speaker lights: the device's own setting.
+      pZeDMD->ResetLightEffect(ZeDMD::LIGHT_EFFECT_ALL_CHANNELS);
+      return;
+    }
+    for (uint8_t channel = 0; channel < SERUM_LIGHT_CHANNELS; channel++)
+    {
+      if (!(defaults & (1u << channel))) continue;
+      const Serum_Light_Effect& effect = effects[channel];
+      pZeDMD->SetLightEffect(channel, effect.mode, effect.speed, effect.options, effect.colors,
+                             (uint16_t)std::min<uint32_t>(effect.durationMs, 0xffff), true, effect.brightness);
+    }
+    return;
+  }
+  const uint32_t started = Serum_GetLightEffects(effects);
+  for (uint8_t channel = 0; channel < SERUM_LIGHT_CHANNELS; channel++)
+  {
+    if (!(started & (1u << channel))) continue;
+    const Serum_Light_Effect& effect = effects[channel];
+    pZeDMD->SetLightEffect(channel, effect.mode, effect.speed, effect.options, effect.colors,
+                           (uint16_t)std::min<uint32_t>(effect.durationMs, 0xffff), false, effect.brightness);
+  }
+#else
+  (void)afterLoad;
+#endif
 }
 
 void DMD::HandleTrigger(uint16_t id)

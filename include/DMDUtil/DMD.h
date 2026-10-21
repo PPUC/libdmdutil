@@ -277,6 +277,10 @@ class DMDUTILAPI DMD
                                        uint8_t g, uint8_t b, Mode mode, uint32_t timestampMs, bool buffered = false);
   void AdjustRGB24Depth(uint8_t* pData, uint8_t* pDstData, int length, uint8_t* palette, uint8_t depth);
   void HandleTrigger(uint16_t id);
+  // The speaker light effects of the loaded colorization to the ZeDMD's light effect channel:
+  // after a load its defaults (or, without speaker lights, the device's own setting), after a
+  // colorize or rotation step the effects libserum started. Queued: frames never wait for it.
+  void SendSerumLightEffects(bool afterLoad);
   void QueueSerumFrames(Update* dmdUpdate, bool render32 = true, bool render64 = true, bool hasTimestamp = false,
                         uint32_t timestampMs = 0, std::shared_ptr<Update>* primaryOutput = nullptr);
   void RecordSerumColorizeCapture(const FrameContext& frameContext, const std::shared_ptr<Update>& primaryOutput,

@@ -201,6 +201,8 @@ Enabled = 0
 Speed = 72000000
 #Forced pause between frames in microseconds
 FramePause = 2
+#Serial device of a PPUCDMD's speaker lights (e.g. /dev/ttyAMA5 for UART5), empty for none
+LightEffectDevice =
 #Enter your panel layout as it is not detected automatically via SPI
 Width = 128
 Height = 32

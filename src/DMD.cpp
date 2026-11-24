@@ -901,6 +901,8 @@ void DMD::FindDisplays()
 
           if (pConfig->IsZeDMDSpiEnabled())
           {
+            // Before OpenSpi(), which may already send a frame.
+            pZeDMD->SetSpiInterleavedLines(pConfig->IsZeDMDSpiInterleavedLines());
             Log(DMDUtil_LogLevel_INFO, "ZeDMD SPI: try to open with speed=%d, framePause=%d, width=%d, height=%d",
                 pConfig->GetZeDMDSpiSpeed(), pConfig->GetZeDMDSpiFramePause(), pConfig->GetZeDMDWidth(),
                 pConfig->GetZeDMDHeight());
@@ -911,6 +913,8 @@ void DMD::FindDisplays()
                   pConfig->GetZeDMDSpiSpeed(), pConfig->GetZeDMDSpiFramePause(), pZeDMD->GetWidth(),
                   pZeDMD->GetHeight());
               Log(DMDUtil_LogLevel_INFO, "ZeDMD SPI: fixed effect trailer enabled");
+              if (pConfig->IsZeDMDSpiInterleavedLines())
+                Log(DMDUtil_LogLevel_INFO, "ZeDMD SPI: frame lines interleaved");
             }
             else
             {

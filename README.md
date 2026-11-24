@@ -201,6 +201,9 @@ Enabled = 0
 Speed = 72000000
 #Forced pause between frames in microseconds
 FramePause = 2
+#Set to 1 to send the lines of a frame interleaved, so that PPUCDMD firmware shows frames sooner
+#on panels with ICND2153 drivers. Needs firmware that knows the interleaved order.
+InterleavedLines = 0
 #Light effects use the fixed SPI trailer automatically; no UART device is needed.
 #Enter your panel layout as it is not detected automatically via SPI
 Width = 128

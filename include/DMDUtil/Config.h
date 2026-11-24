@@ -121,6 +121,8 @@ class DMDUTILAPI Config
   void SetZeDMDSpiSpeed(int speed) { m_zedmdSpiSpeed = speed; }
   int GetZeDMDSpiFramePause() const { return m_zedmdSpiFramePause; }
   void SetZeDMDSpiFramePause(int framePause) { m_zedmdSpiFramePause = framePause; }
+  bool IsZeDMDSpiInterleavedLines() const { return m_zedmdSpiInterleavedLines; }
+  void SetZeDMDSpiInterleavedLines(bool interleaved) { m_zedmdSpiInterleavedLines = interleaved; }
   int GetZeDMDWidth() const { return m_zedmdWidth; }
   void SetZeDMDWidth(int width) { m_zedmdWidth = width; }
   int GetZeDMDHeight() const { return m_zedmdHeight; }
@@ -204,6 +206,7 @@ class DMDUTILAPI Config
   bool m_zedmdSpiEnabled;
   int m_zedmdSpiSpeed;
   int m_zedmdSpiFramePause;
+  bool m_zedmdSpiInterleavedLines;
   int m_zedmdWidth;
   int m_zedmdHeight;
   bool m_dmdServer;

@@ -71,6 +71,7 @@ Config::Config()
   m_zedmdSpiEnabled = false;
   m_zedmdSpiSpeed = 72000000;
   m_zedmdSpiFramePause = 2;
+  m_zedmdSpiInterleavedLines = false;
   m_zedmdWidth = 128;
   m_zedmdHeight = 32;
   m_pixelcade = true;
@@ -123,6 +124,7 @@ void Config::parseConfigFile(const char* path)
   SetZeDMDSpiEnabled(ReadOr<bool>(r, "ZeDMD-SPI", "Enabled", false));
   SetZeDMDSpiSpeed(ReadOr<int>(r, "ZeDMD-SPI", "Speed", 72000000));
   SetZeDMDSpiFramePause(ReadOr<int>(r, "ZeDMD-SPI", "FramePause", 2));
+  SetZeDMDSpiInterleavedLines(ReadOr<bool>(r, "ZeDMD-SPI", "InterleavedLines", false));
   SetZeDMDWidth(ReadOr<int>(r, "ZeDMD-SPI", "Width", 128));
   SetZeDMDHeight(ReadOr<int>(r, "ZeDMD-SPI", "Height", 32));
 
